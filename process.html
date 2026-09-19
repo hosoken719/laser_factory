@@ -59,7 +59,7 @@
 <div class="drawing-toolbar">
 <div class="tool-group doc-nav">
 <button aria-label="前のページ" class="tool-btn square" id="prevPage" type="button">‹</button>
-<span class="doc-page"><b id="pageNow">2</b> / 3 ページ</span>
+<span class="doc-page"><b id="pageNow">2</b> / 4 ページ</span>
 <button aria-label="次のページ" class="tool-btn square" id="nextPage" type="button">›</button>
 <span class="doc-name" id="docName">図面 CB-2026-3311-A　制御盤カバー 本体図.pdf</span>
 </div>
@@ -144,6 +144,7 @@
 <button class="thumb" data-name="加工指示書 CB-2026-3311-A.pdf" data-page="1" type="button">指示書<span>P.1</span></button>
 <button class="thumb active" data-name="図面 CB-2026-3311-A　制御盤カバー 本体図.pdf" data-page="2" type="button">図面<span>P.2</span></button>
 <button class="thumb" data-name="図面 CB-2026-3311-A　曲げ詳細.pdf" data-page="3" type="button">図面<span>P.3</span></button>
+<button class="thumb" data-name="原価情報 CB-2026-3311-A.pdf" data-page="4" type="button">原価情報<span>P.4</span></button>
 </div>
 </div>
 </section>
@@ -308,7 +309,7 @@
       btn.classList.add('active');
       document.getElementById('pageNow').textContent = btn.dataset.page;
       document.getElementById('docName').textContent = btn.dataset.name;
-      notify(btn.dataset.page === '1' ? '加工指示書を表示しました。' : `図面 P.${btn.dataset.page} を表示しました。`);
+      notify(btn.dataset.page === '1' ? '加工指示書を表示しました。' : btn.dataset.page === '4' ? '原価情報 P.4 を表示しました。' : `図面 P.${btn.dataset.page} を表示しました。`);
     }
     pageButtons.forEach(btn => btn.addEventListener('click', () => selectPage(btn)));
     document.getElementById('prevPage').addEventListener('click', () => {
