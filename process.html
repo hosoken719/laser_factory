@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LASERTEC 業務ポータル - 図面</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="process.css" rel="stylesheet"/>
+</head>
+<body class="process-body">
+<!-- 共通ヘッダー：index.htmlと同じ仕様 -->
+<header class="topbar">
+<div class="topbar-left">
+<div class="brand">
+<div class="brand-mark">LT</div>
+<div>
+<div class="brand-name">LASERTEC 業務ポータル</div>
+<div class="brand-sub">案件進捗・品質管理ポータル</div>
+</div>
+</div>
+<nav aria-label="メインナビゲーション" class="global-nav">
+<button class="nav-btn" data-href="index.html" type="button">生産状況</button>
+<button class="nav-btn" data-href="cad-setup.html" type="button">工程登録</button>
+<button class="nav-btn" data-href="projects.html" type="button">作業入力</button>
+<button class="nav-btn active" data-href="process.html" type="button">図面</button>
+</nav>
+</div>
+<div class="user-area">
+<div class="date" id="todayLabel">2026年9月25日（金）</div>
+<div class="user"><span class="status-dot"></span>稼働シフト：日勤</div>
+<div class="avatar">仮</div>
+<div class="role">社長</div>
+</div>
+</header>
+<div class="page-context">
+<div class="breadcrumb-row">
+<button class="crumb-link" data-href="projects.html" type="button">作業入力</button>
+<span class="crumb-sep">›</span>
+<span class="crumb-current">図面</span>
+</div>
+<div class="case-meta-bar">
+<div class="case-meta-main">
+<span class="stage-badge">加工中</span>
+<h1>ロビー工業　制御盤カバー</h1>
+<strong class="case-qty">20台</strong>
+<span class="case-no">案件No. 2026-0912-014</span>
+</div>
+<div class="case-meta-sub">
+<div class="meta-item"><span>納期</span><strong>2026/09/20</strong></div>
+<div class="meta-item"><span>現在工程</span><strong>2Dレーザー加工</strong></div>
+<div class="meta-item"><span>材質 / 板厚</span><strong>SPCC　t1.6</strong></div>
+<div class="meta-item"><span>数量</span><strong>20枚</strong></div>
+</div>
+</div>
+</div>
+<main class="process-main" id="processMain">
+<section aria-label="加工指示書・図面PDFビューア" class="drawing-panel">
+<div class="drawing-toolbar">
+<div class="tool-group doc-nav">
+<button aria-label="前のページ" class="tool-btn square" id="prevPage" type="button">‹</button>
+<span class="doc-page"><b id="pageNow">2</b> / 3 ページ</span>
+<button aria-label="次のページ" class="tool-btn square" id="nextPage" type="button">›</button>
+<span class="doc-name" id="docName">図面 CB-2026-3311-A　制御盤カバー 本体図.pdf</span>
+</div>
+<div aria-label="図面追記ツール" class="tool-group pen-tools">
+<button class="pen-btn active" data-tool="cursor" title="選択・移動" type="button">↖</button>
+<button class="pen-btn" data-tool="pen" title="ペン" type="button">✎</button>
+<button class="pen-btn" data-tool="marker" title="マーカー" type="button">▰</button>
+<button class="pen-btn" data-tool="eraser" title="消しゴム" type="button">⌫</button>
+<span class="tool-sep"></span>
+<button class="color-btn red active" data-color="#c81e2b" title="赤：要確認・実測値" type="button"></button>
+<button class="color-btn blue" data-color="#1c5aa8" title="青：指示の補足" type="button"></button>
+<button class="color-btn black" data-color="#232120" title="黒：確認サイン" type="button"></button>
+</div>
+<div class="tool-group view-tools">
+<button aria-label="縮小" class="tool-btn square" id="zoomOut" type="button">−</button>
+<span class="zoom-value" id="zoomLabel">100%</span>
+<button aria-label="拡大" class="tool-btn square" id="zoomIn" type="button">＋</button>
+<button aria-label="表示をリセット" class="tool-btn square" id="resetZoom" type="button">⟳</button>
+<button class="tool-btn expand" id="fullscreenBtn" type="button">⛶ 全画面表示</button>
+</div>
+</div>
+<div class="drawing-canvas-wrap" id="drawingScrollArea">
+<div class="drawing-canvas" id="drawingCanvas">
+<svg aria-label="図面PDFモック" class="drawing-svg" viewbox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fff" height="676" stroke="#232120" stroke-width="2" width="976" x="12" y="12"></rect>
+<rect fill="none" height="652" stroke="#232120" stroke-width="1" width="952" x="24" y="24"></rect>
+<rect fill="none" height="330" stroke="#33302d" stroke-width="2.5" width="430" x="230" y="110"></rect>
+<circle cx="260" cy="140" fill="none" r="9" stroke="#33302d" stroke-width="2"></circle>
+<circle cx="630" cy="140" fill="none" r="9" stroke="#33302d" stroke-width="2"></circle>
+<circle cx="260" cy="410" fill="none" r="9" stroke="#33302d" stroke-width="2"></circle>
+<circle cx="630" cy="410" fill="none" r="9" stroke="#33302d" stroke-width="2"></circle>
+<path d="M251 140h18M260 131v18M621 140h18M630 131v18M251 410h18M260 401v18M621 410h18M630 401v18" stroke="#33302d" stroke-width="1"></path>
+<rect fill="none" height="60" rx="4" stroke="#33302d" stroke-width="2" width="120" x="390" y="220"></rect>
+<line stroke="#6a655c" stroke-dasharray="14 4 2 4" stroke-width="1.3" x1="230" x2="660" y1="360" y2="360"></line>
+<text fill="#6a655c" font-size="12" x="666" y="364">曲げ 90°</text>
+<line stroke="#33302d" x1="230" x2="660" y1="80" y2="80"></line>
+<line stroke="#33302d" x1="230" x2="230" y1="72" y2="110"></line>
+<line stroke="#33302d" x1="660" x2="660" y1="72" y2="110"></line>
+<polygon fill="#33302d" points="230,80 240,76 240,84"></polygon><polygon fill="#33302d" points="660,80 650,76 650,84"></polygon>
+<text fill="#232120" font-size="15" font-weight="700" text-anchor="middle" x="445" y="70">450</text>
+<line stroke="#33302d" x1="195" x2="195" y1="110" y2="440"></line>
+<line stroke="#33302d" x1="187" x2="230" y1="110" y2="110"></line>
+<line stroke="#33302d" x1="187" x2="230" y1="440" y2="440"></line>
+<polygon fill="#33302d" points="195,110 191,120 199,120"></polygon><polygon fill="#33302d" points="195,440 191,430 199,430"></polygon>
+<text fill="#232120" font-size="15" font-weight="700" text-anchor="middle" transform="rotate(-90 180 278)" x="180" y="278">300</text>
+<line stroke="#33302d" x1="630" x2="700" y1="140" y2="100"></line>
+<text fill="#232120" font-size="13" x="704" y="98">4-φ8 貫通</text>
+<text fill="#232120" font-size="12" text-anchor="middle" x="450" y="215">120×60</text>
+<text fill="#4a4642" font-size="13" text-anchor="middle" x="445" y="470">正面図（S=1:2）</text>
+<g class="sample-annotation">
+<circle cx="260" cy="140" fill="none" r="18" stroke="#c81e2b" stroke-width="2.4"></circle>
+<path d="M300 128q6 14 14 2" fill="none" stroke="#c81e2b" stroke-linecap="round" stroke-width="2.4"></path>
+<text fill="#c81e2b" font-size="12" font-weight="700" x="305" y="118">初品OK</text>
+<path d="M330 78q60 -10 110 2" fill="none" stroke="#c81e2b" stroke-linecap="round" stroke-width="2"></path>
+<text fill="#c81e2b" font-size="12" font-weight="700" x="345" y="60">実測 449.8　OK</text>
+<path d="M540 235q30 20 5 45" fill="none" stroke="#1c5aa8" stroke-linecap="round" stroke-width="2"></path>
+<text fill="#1c5aa8" font-size="11.5" font-weight="700" x="548" y="230">R2で面取り指示</text>
+</g>
+<g transform="translate(600,500)">
+<rect fill="#fff" height="150" stroke="#232120" stroke-width="1.4" width="376" x="0" y="0"></rect>
+<line stroke="#232120" x1="0" x2="376" y1="30" y2="30"></line><line stroke="#232120" x1="0" x2="376" y1="58" y2="58"></line><line stroke="#232120" x1="0" x2="376" y1="86" y2="86"></line><line stroke="#232120" x1="0" x2="376" y1="114" y2="114"></line>
+<line stroke="#232120" x1="148" x2="148" y1="114" y2="150"></line><line stroke="#232120" x1="262" x2="262" y1="114" y2="150"></line>
+<text fill="#232120" font-size="13" font-weight="700" x="10" y="20">制御盤カバー　本体</text>
+<text fill="#4a4642" font-size="11" x="10" y="48">図番：CB-2026-3311-A　　版：Rev.B</text>
+<text fill="#4a4642" font-size="11" x="10" y="76">材質：SPCC　　板厚：t1.6　　尺度：1:2</text>
+<text fill="#4a4642" font-size="11" x="10" y="104">得意先：ロビー工業　　数量：20枚</text>
+<text fill="#85806f" font-size="10" x="10" y="134">作成日</text><text fill="#232120" font-size="11" x="10" y="146">2026/09/10</text>
+<text fill="#85806f" font-size="10" x="158" y="134">承認</text><text fill="#232120" font-size="11" x="158" y="146">仮</text>
+<text fill="#85806f" font-size="10" x="272" y="134">頁</text><text fill="#232120" font-size="11" x="272" y="146">2 / 3</text>
+</g>
+</svg>
+<canvas aria-label="図面への手書き追記" height="700" id="annotationCanvas" width="1000"></canvas>
+</div>
+</div>
+<div class="drawing-footer">
+<div class="pen-legend">
+<span><i class="legend-swatch red"></i>要確認・実測値</span>
+<span><i class="legend-swatch blue"></i>指示の補足</span>
+<span><i class="legend-swatch black"></i>確認サイン</span>
+</div>
+<div class="drawing-thumbnails" id="pageTabs">
+<button class="thumb" data-name="加工指示書 CB-2026-3311-A.pdf" data-page="1" type="button">指示書<span>P.1</span></button>
+<button class="thumb active" data-name="図面 CB-2026-3311-A　制御盤カバー 本体図.pdf" data-page="2" type="button">図面<span>P.2</span></button>
+<button class="thumb" data-name="図面 CB-2026-3311-A　曲げ詳細.pdf" data-page="3" type="button">図面<span>P.3</span></button>
+</div>
+</div>
+</section>
+<aside aria-label="加工記録入力" class="side-panel">
+<div class="side-panel-inner">
+<details class="side-section" open="">
+<summary>加工機への情報入力</summary>
+<div class="side-section-body">
+<label class="field-row">加工機
+              <select>
+<option>ファイバーレーザー 3号機</option>
+<option>ファイバーレーザー 1号機</option>
+<option>ファイバーレーザー 2号機</option>
+</select>
+</label>
+<label class="field-row">加工プログラムNo.
+              <input type="text" value="CB-2026-3311-A_P02"/>
+</label>
+<div class="field-grid">
+<label>材質<input type="text" value="SPCC"/></label>
+<label>板厚<input type="text" value="1.6mm"/></label>
+<label>数量<input type="number" value="20"/></label>
+<label>アシストガス<input type="text" value="酸素"/></label>
+</div>
+<button class="btn-machine" id="machineSend" type="button">加工機へ送信</button>
+</div>
+</details>
+<details class="side-section" open="">
+<summary>加工中チェック項目</summary>
+<div class="side-section-body">
+<label class="check-row"><input checked="" type="checkbox"/> 初品寸法確認（1枚目）</label>
+<label class="check-row"><input checked="" type="checkbox"/> 材質・板厚ロット確認</label>
+<label class="check-row"><input type="checkbox"/> バリ・面粗さ確認</label>
+<label class="check-row"><input type="checkbox"/> 穴位置・寸法サンプリング（5枚毎）</label>
+<label class="check-row"><input type="checkbox"/> 数量・員数確認</label>
+<p class="side-hint">実測値・○×・サインなどは、左の図面PDFへ直接ペン入力できます。</p>
+</div>
+</details>
+<details class="side-section">
+<summary>作業実績</summary>
+<div class="side-section-body">
+<p class="side-hint" style="margin-top:0;">開始・終了時刻は案件一覧で「開始」「終了」をタップした時刻を自動記録します。この画面では時刻を手入力しません。</p>
+<div class="field-grid">
+<label>開始時刻<input readonly="" type="text" value="09:20（自動記録）"/></label>
+<label>終了時刻<input readonly="" type="text" value="—（作業中）"/></label>
+<label>良品数<input type="number" value="19"/></label>
+<label>不良数<input type="number" value="1"/></label>
+</div>
+<div class="calculated-row"><span>加工時間</span><strong>案件一覧から自動集計</strong></div>
+<label class="field-row">作業実績メモ
+              <textarea placeholder="段取り替え、停止理由、再加工など" rows="2"></textarea>
+</label>
+</div>
+</details>
+<details class="side-section">
+<summary>フィードバック・申し送り</summary>
+<div class="side-section-body">
+<label class="field-row">加工指示へのフィードバック
+              <textarea placeholder="図面・加工指示についての気づき" rows="3">切欠き部のR指示が図面に無かったため、R2で追記して加工しました。次回図面反映をお願いします。</textarea>
+</label>
+<label class="field-row">後工程への申し送り
+              <textarea placeholder="曲げ・溶接・検査へ伝える内容" rows="3">四隅の取付穴は初品でOK確認済み。中央切欠きのR2面取りはバリ残りなし。</textarea>
+</label>
+</div>
+</details>
+</div>
+<div class="side-actions">
+<button class="btn-draft" id="draftSave" type="button">下書き保存</button>
+<button class="btn-complete" id="completeWork" type="button">加工内容を保存</button>
+</div>
+</aside>
+</main>
+<div aria-live="polite" class="toast process-toast" id="processToast" role="status"></div>
+<script>
+    const canvas = document.getElementById('annotationCanvas');
+    const ctx = canvas.getContext('2d');
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    const zoomLabel = document.getElementById('zoomLabel');
+    const toast = document.getElementById('processToast');
+    let tool = 'cursor';
+    let penColor = '#c81e2b';
+    let drawing = false;
+    let zoom = 1;
+
+    function notify(message){
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(notify.timer);
+      notify.timer = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+
+    document.querySelectorAll('.crumb-link[data-href]').forEach(btn => btn.addEventListener('click', () => { location.href = btn.dataset.href; }));
+    document.querySelectorAll('.nav-btn[data-href]').forEach(btn => btn.addEventListener('click', () => {
+      location.href = btn.dataset.href;
+    }));
+
+    document.querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => {
+      location.href = `index.html#${btn.dataset.go}`;
+    }));
+
+    function applyZoom(next){
+      zoom = Math.max(.7, Math.min(1.6, next));
+      drawingCanvas.style.setProperty('--drawing-zoom', zoom);
+      zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+    }
+    document.getElementById('zoomIn').addEventListener('click', () => applyZoom(zoom + .1));
+    document.getElementById('zoomOut').addEventListener('click', () => applyZoom(zoom - .1));
+    document.getElementById('resetZoom').addEventListener('click', () => applyZoom(1));
+
+    document.getElementById('fullscreenBtn').addEventListener('click', e => {
+      document.body.classList.toggle('drawing-fullscreen');
+      const full = document.body.classList.contains('drawing-fullscreen');
+      e.currentTarget.textContent = full ? '⤢ 通常表示に戻る' : '⛶ 全画面表示';
+    });
+
+    document.querySelectorAll('.pen-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.pen-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      tool = btn.dataset.tool;
+      canvas.style.cursor = tool === 'cursor' ? 'default' : 'crosshair';
+    }));
+    document.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      penColor = btn.dataset.color;
+    }));
+
+    function canvasPoint(e){
+      const r = canvas.getBoundingClientRect();
+      return { x:(e.clientX-r.left)*(canvas.width/r.width), y:(e.clientY-r.top)*(canvas.height/r.height) };
+    }
+    canvas.addEventListener('pointerdown', e => {
+      if(tool === 'cursor') return;
+      drawing = true;
+      canvas.setPointerCapture(e.pointerId);
+      const p = canvasPoint(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x,p.y);
+    });
+    canvas.addEventListener('pointermove', e => {
+      if(!drawing) return;
+      const p = canvasPoint(e);
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if(tool === 'eraser'){
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 24;
+      }else{
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = tool === 'marker' ? `${penColor}66` : penColor;
+        ctx.lineWidth = tool === 'marker' ? 20 : 3;
+      }
+      ctx.lineTo(p.x,p.y); ctx.stroke();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(type => canvas.addEventListener(type, () => {
+      drawing = false; ctx.closePath();
+    }));
+
+    const pageButtons = [...document.querySelectorAll('.thumb')];
+    function selectPage(btn){
+      pageButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('pageNow').textContent = btn.dataset.page;
+      document.getElementById('docName').textContent = btn.dataset.name;
+      notify(btn.dataset.page === '1' ? '加工指示書を表示しました。' : `図面 P.${btn.dataset.page} を表示しました。`);
+    }
+    pageButtons.forEach(btn => btn.addEventListener('click', () => selectPage(btn)));
+    document.getElementById('prevPage').addEventListener('click', () => {
+      const i = pageButtons.findIndex(b => b.classList.contains('active'));
+      selectPage(pageButtons[Math.max(0, i-1)]);
+    });
+    document.getElementById('nextPage').addEventListener('click', () => {
+      const i = pageButtons.findIndex(b => b.classList.contains('active'));
+      selectPage(pageButtons[Math.min(pageButtons.length-1, i+1)]);
+    });
+
+    document.getElementById('machineSend').addEventListener('click', () => notify('加工機へ入力情報を送信しました。'));
+    document.getElementById('draftSave').addEventListener('click', () => notify('図面追記と入力内容を下書き保存しました。'));
+    document.getElementById('completeWork').addEventListener('click', () => notify('図面追記・チェック・申し送り内容を保存しました。工程の終了は案件一覧から行います。'));
+
+    applyZoom(1);
+  </script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LASERTEC 業務ポータル - CAD案件登録・工程設定</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="cad-setup.css" rel="stylesheet"/>
+</head>
+<body class="cad-body">
+<!-- 共通ヘッダー：index.htmlと同じ仕様 -->
+<header class="topbar">
+<div class="topbar-left">
+<div class="brand">
+<div class="brand-mark">LT</div>
+<div>
+<div class="brand-name">LASERTEC 業務ポータル</div>
+<div class="brand-sub">案件進捗・品質管理ポータル</div>
+</div>
+</div>
+<nav aria-label="メインナビゲーション" class="global-nav">
+<button class="nav-btn" data-href="index.html" type="button">生産状況</button>
+<button class="nav-btn active" data-href="cad-setup.html" type="button">工程登録</button>
+<button class="nav-btn" data-href="projects.html" type="button">作業入力</button>
+<button class="nav-btn" data-href="process.html" type="button">図面</button>
+</nav>
+</div>
+<div class="user-area">
+<div class="date" id="todayLabel">2026年9月25日（金）</div>
+<div class="user"><span class="status-dot"></span>稼働シフト：日勤</div>
+<div class="avatar">仮</div>
+<div class="role">社長</div>
+</div>
+</header>
+<div class="cad-page-context">
+<div class="breadcrumb-row">
+<button class="crumb-link" data-href="projects.html" type="button">作業入力</button>
+<span class="crumb-sep">›</span>
+<span class="crumb-current">CAD案件登録・工程設定</span>
+</div>
+<div class="cad-title-row">
+<div>
+<div class="title-line">
+<span class="cad-badge">CAD登録</span>
+<h1>案件登録・工程設定</h1>
+</div>
+<p>図面を登録し、この案件が通る工程を順番に設定します。</p>
+</div>
+<div class="record-state">
+<span>登録状態</span>
+<strong id="saveState">下書き</strong>
+</div>
+</div>
+</div>
+<main class="cad-main">
+<section aria-label="案件情報と図面登録" class="cad-column cad-left">
+<article class="cad-card">
+<div class="card-head">
+<div>
+<span class="step-no">1</span>
+<div>
+<h2>案件情報</h2>
+<p>受注情報を確認し、必要な内容だけ入力します。</p>
+</div>
+</div>
+<span class="required-note">* 必須</span>
+</div>
+<div class="card-body form-grid">
+<label class="field wide">案件No.
+            <input type="text" value="2026-0925-021"/>
+</label>
+<label class="field">得意先 <span>*</span>
+<input type="text" value="中京精機"/>
+</label>
+<label class="field">案件名 <span>*</span>
+<input type="text" value="治具ベースプレート"/>
+</label>
+<label class="field">数量 <span>*</span>
+<div class="input-with-unit"><input type="number" value="4"/><select><option>式</option><option>枚</option><option>台</option><option>個</option></select></div>
+</label>
+<label class="field">納期 <span>*</span>
+<input type="date" value="2026-10-02"/>
+</label>
+<label class="field">材質
+            <input type="text" value="SS400"/>
+</label>
+<label class="field">板厚
+            <input type="text" value="9.0mm"/>
+</label>
+<label class="field wide">CAD担当者
+            <select>
+<option>鈴木</option>
+<option>佐藤</option>
+<option>田中</option>
+</select>
+</label>
+<label class="field wide">案件メモ
+            <textarea placeholder="急ぎ、支給材、特殊指示など" rows="2">客先支給材あり。加工後は本社工場へ移動。</textarea>
+</label>
+</div>
+</article>
+<article class="cad-card doc-card">
+<div class="card-head">
+<div>
+<span class="step-no">2</span>
+<div>
+<h2>図面・加工指示書</h2>
+<p>加工担当者が現場で開くPDFを案件に紐付けます。</p>
+</div>
+</div>
+<span class="doc-count"><b id="docCount">3</b>件</span>
+</div>
+<div class="card-body">
+<label class="upload-drop" id="uploadDrop">
+<input accept="application/pdf,.pdf" id="fileInput" multiple="" type="file"/>
+<span class="upload-icon">PDF</span>
+<strong>PDFを追加</strong>
+<small>クリックして選択 / 複数ファイル可</small>
+</label>
+<div class="doc-list" id="docList">
+<div class="doc-row" data-file="加工指示書_CJ-4412.pdf">
+<span class="doc-kind instruction">指示書</span>
+<div class="doc-info"><strong>加工指示書_CJ-4412.pdf</strong><span>1ページ・248KB</span></div>
+<label class="main-doc"><input checked="" name="mainDoc" type="radio"/> 現場で最初に表示</label>
+<button class="mini-btn preview" type="button">確認</button>
+<button class="icon-btn remove-doc" title="削除" type="button">×</button>
+</div>
+<div class="doc-row" data-file="CJ-4412_ベースプレート.pdf">
+<span class="doc-kind drawing">図面</span>
+<div class="doc-info"><strong>CJ-4412_ベースプレート.pdf</strong><span>2ページ・612KB</span></div>
+<label class="main-doc"><input name="mainDoc" type="radio"/> 現場で最初に表示</label>
+<button class="mini-btn preview" type="button">確認</button>
+<button class="icon-btn remove-doc" title="削除" type="button">×</button>
+</div>
+<div class="doc-row" data-file="CJ-4412_溶接詳細.pdf">
+<span class="doc-kind drawing">図面</span>
+<div class="doc-info"><strong>CJ-4412_溶接詳細.pdf</strong><span>1ページ・391KB</span></div>
+<label class="main-doc"><input name="mainDoc" type="radio"/> 現場で最初に表示</label>
+<button class="mini-btn preview" type="button">確認</button>
+<button class="icon-btn remove-doc" title="削除" type="button">×</button>
+</div>
+</div>
+</div>
+</article>
+</section>
+<section aria-label="工程設定" class="cad-column cad-right">
+<article class="cad-card route-card">
+<div class="card-head route-head">
+<div>
+<span class="step-no">3</span>
+<div>
+<h2>工程設定</h2>
+<p>この案件が通る工程だけを、実際の順番に並べます。</p>
+</div>
+</div>
+<span class="route-count">全 <b id="routeCount">8</b> 工程</span>
+</div>
+<div class="route-body">
+<div class="process-palette">
+<div class="palette-head">
+<strong>工程を追加</strong>
+<span>必要な工程だけ選択</span>
+</div>
+<div class="palette-buttons" id="paletteButtons">
+<button data-step="2Dレーザー加工" type="button">＋ 2Dレーザー</button>
+<button data-step="3Dレーザー加工" type="button">＋ 3Dレーザー</button>
+<button data-step="曲げ" type="button">＋ 曲げ</button>
+<button data-step="溶接" type="button">＋ 溶接</button>
+<button data-step="機械加工" type="button">＋ 機械加工</button>
+<button data-step="仕上げ" type="button">＋ 仕上げ</button>
+<button data-step="金型製作" type="button">＋ 金型製作</button>
+</div>
+<div class="custom-step-row">
+<input id="customStep" placeholder="その他の工程名" type="text"/>
+<button id="addCustomStep" type="button">追加</button>
+</div>
+</div>
+<div class="route-builder-wrap">
+<div class="route-builder-head">
+<div>
+<strong>この案件の工程順</strong>
+<span>▲▼で順番を変更できます</span>
+</div>
+<button class="reset-route" id="resetRoute" type="button">標準に戻す</button>
+</div>
+<ol class="route-list" id="routeList"></ol>
+</div>
+<div class="route-preview-box">
+<div class="preview-head">
+<strong>現場での表示イメージ</strong>
+<span>登録後は案件一覧にこの順番で表示</span>
+</div>
+<div class="route-preview" id="routePreview"></div>
+</div>
+<div class="time-rule-box">
+<div class="time-rule-icon">⏱</div>
+<div>
+<strong>作業時間は工程操作から自動記録</strong>
+<p>加工担当者が「作業開始」を押した時刻から、「この工程を完了して次工程へ送る」を押した時刻までを記録する想定です。</p>
+</div>
+</div>
+</div>
+</article>
+<div class="sticky-actions">
+<div class="validation" id="validationMessage">
+<span class="check-dot">✓</span>
+<span>必須項目・図面・工程順を確認済み</span>
+</div>
+<button class="btn-cancel" data-href="projects.html" type="button">キャンセル</button>
+<button class="btn-draft" id="saveDraft" type="button">下書き保存</button>
+<button class="btn-register" id="registerCase" type="button">案件を登録して一覧へ反映</button>
+</div>
+</section>
+</main>
+<div aria-hidden="true" class="modal-backdrop" id="previewModal">
+<div aria-labelledby="previewTitle" aria-modal="true" class="preview-modal-card" role="dialog">
+<div class="preview-modal-head">
+<strong id="previewTitle">PDFプレビュー</strong>
+<button id="closePreview" type="button">×</button>
+</div>
+<div class="fake-pdf">
+<div class="fake-pdf-toolbar"><span>PDF</span><span id="previewFileName">ファイル名</span><span>100%</span></div>
+<div class="fake-paper">
+<div class="fake-title">加工図面プレビュー</div>
+<div class="fake-shape"></div>
+<div class="fake-dimension horizontal"></div>
+<div class="fake-dimension vertical"></div>
+<div class="fake-title-block"></div>
+</div>
+</div>
+</div>
+</div>
+<div aria-live="polite" class="toast cad-toast" id="cadToast" role="status"></div>
+<script>
+    const routeList = document.getElementById('routeList');
+    const routePreview = document.getElementById('routePreview');
+    const routeCount = document.getElementById('routeCount');
+    const docCount = document.getElementById('docCount');
+    const saveState = document.getElementById('saveState');
+    const toast = document.getElementById('cadToast');
+
+    const standardRoute = ['見積','受注','設計','3Dレーザー加工','溶接','最終検査','納品'];
+    let route = ['見積','受注','設計','2Dレーザー加工','3Dレーザー加工','溶接','最終検査','納品'];
+    const fixedSteps = new Set(['見積','受注','設計','最終検査','納品']);
+
+    function notify(message){
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(notify.timer);
+      notify.timer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+
+    document.querySelectorAll('.crumb-link[data-href]').forEach(btn => btn.addEventListener('click', () => { location.href = btn.dataset.href; }));
+    document.querySelectorAll('.nav-btn[data-href]').forEach(btn => btn.addEventListener('click', () => {
+      location.href = btn.dataset.href;
+    }));
+
+    document.querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => {
+      location.href = `index.html#${btn.dataset.go}`;
+    }));
+
+    function majorStage(step){
+      if(['見積','受注'].includes(step)) return '受注';
+      if(step === '設計') return '設計';
+      if(['最終検査'].includes(step)) return '最終検査';
+      if(step === '納品') return '納品';
+      return '加工';
+    }
+
+    function renderRoute(){
+      routeList.innerHTML = route.map((step, index) => {
+        const fixed = fixedSteps.has(step);
+        const isFirst = index === 0;
+        const isLast = index === route.length - 1;
+        return `<li class="route-item ${fixed ? 'fixed' : ''}" data-index="${index}">
+          <span class="route-index">${String(index+1).padStart(2,'0')}</span>
+          <span class="major-label">${majorStage(step)}</span>
+          <strong>${step}</strong>
+          <span class="route-note">${fixed ? '固定工程' : '案件ごとに設定'}</span>
+          <div class="route-actions">
+            <button type="button" class="move-up" ${isFirst ? 'disabled' : ''} title="上へ">▲</button>
+            <button type="button" class="move-down" ${isLast ? 'disabled' : ''} title="下へ">▼</button>
+            <button type="button" class="remove-step" ${fixed ? 'disabled' : ''} title="削除">×</button>
+          </div>
+        </li>`;
+      }).join('');
+
+      routePreview.innerHTML = route.map((step,index) => `
+        <span class="preview-step ${fixedSteps.has(step) ? 'fixed' : 'variable'}">${step}</span>${index < route.length-1 ? '<span class="preview-arrow">›</span>' : ''}
+      `).join('');
+      routeCount.textContent = route.length;
+      bindRouteButtons();
+    }
+
+    function bindRouteButtons(){
+      routeList.querySelectorAll('.route-item').forEach(item => {
+        const index = Number(item.dataset.index);
+        item.querySelector('.move-up').addEventListener('click', () => {
+          if(index <= 0) return;
+          [route[index-1], route[index]] = [route[index], route[index-1]];
+          renderRoute();
+        });
+        item.querySelector('.move-down').addEventListener('click', () => {
+          if(index >= route.length-1) return;
+          [route[index+1], route[index]] = [route[index], route[index+1]];
+          renderRoute();
+        });
+        item.querySelector('.remove-step').addEventListener('click', () => {
+          if(fixedSteps.has(route[index])) return;
+          route.splice(index,1);
+          renderRoute();
+        });
+      });
+    }
+
+    function insertProcessStep(step){
+      const finalInspectionIndex = route.indexOf('最終検査');
+      route.splice(finalInspectionIndex < 0 ? route.length : finalInspectionIndex, 0, step);
+      renderRoute();
+      notify(`「${step}」を工程に追加しました。`);
+    }
+
+    document.getElementById('paletteButtons').querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => insertProcessStep(btn.dataset.step));
+    });
+
+    document.getElementById('addCustomStep').addEventListener('click', () => {
+      const input = document.getElementById('customStep');
+      const value = input.value.trim();
+      if(!value){ notify('追加する工程名を入力してください。'); return; }
+      insertProcessStep(value);
+      input.value = '';
+    });
+
+    document.getElementById('resetRoute').addEventListener('click', () => {
+      route = [...standardRoute];
+      renderRoute();
+      notify('工程順を標準例に戻しました。');
+    });
+
+    function refreshDocCount(){
+      docCount.textContent = document.querySelectorAll('#docList .doc-row').length;
+    }
+
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const files = [...e.target.files];
+      const list = document.getElementById('docList');
+      files.forEach(file => {
+        const row = document.createElement('div');
+        row.className = 'doc-row';
+        row.dataset.file = file.name;
+        row.innerHTML = `
+          <span class="doc-kind drawing">PDF</span>
+          <div class="doc-info"><strong>${file.name}</strong><span>追加済み・${Math.max(1,Math.round(file.size/1024))}KB</span></div>
+          <label class="main-doc"><input type="radio" name="mainDoc" /> 現場で最初に表示</label>
+          <button class="mini-btn preview" type="button">確認</button>
+          <button class="icon-btn remove-doc" type="button" title="削除">×</button>`;
+        list.appendChild(row);
+        bindDocRow(row);
+      });
+      refreshDocCount();
+      e.target.value = '';
+      if(files.length) notify(`${files.length}件のPDFを追加しました。`);
+    });
+
+    const modal = document.getElementById('previewModal');
+    function bindDocRow(row){
+      row.querySelector('.remove-doc').addEventListener('click', () => {
+        row.remove();
+        refreshDocCount();
+        notify('PDFを登録対象から外しました。');
+      });
+      row.querySelector('.preview').addEventListener('click', () => {
+        document.getElementById('previewFileName').textContent = row.dataset.file || row.querySelector('.doc-info strong').textContent;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden','false');
+      });
+    }
+    document.querySelectorAll('.doc-row').forEach(bindDocRow);
+    document.getElementById('closePreview').addEventListener('click', () => {
+      modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+    });
+    modal.addEventListener('click', e => {
+      if(e.target === modal){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    });
+
+    document.getElementById('saveDraft').addEventListener('click', () => {
+      saveState.textContent = '下書き保存済み';
+      saveState.classList.add('saved');
+      notify('案件情報・図面・工程順を下書き保存しました。');
+    });
+
+    document.getElementById('registerCase').addEventListener('click', () => {
+      saveState.textContent = '登録済み';
+      saveState.classList.add('registered');
+      notify('案件を登録しました。案件一覧へ反映する想定です。');
+      document.getElementById('registerCase').textContent = '登録済み';
+    });
+
+    renderRoute();
+    refreshDocCount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LASERTEC 業務ポータル - 案件一覧</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <div class="brand-mark">LT</div>
+        <div>
+          <div class="brand-name">LASERTEC 業務ポータル</div>
+          <div class="brand-sub">案件進捗・品質管理ポータル</div>
+        </div>
+      </div>
+      <nav class="global-nav" aria-label="メインナビゲーション">
+        <button class="nav-btn" type="button" data-href="index.html">生産状況</button>
+        <button class="nav-btn" type="button" data-href="cad-setup.html">工程登録</button>
+        <button class="nav-btn active" type="button" data-href="projects.html">作業入力</button>
+        <button class="nav-btn" type="button" data-href="process.html">図面</button>
+      </nav>
+    </div>
+    <div class="user-area">
+      <div class="date" id="todayLabel">2026年9月25日（金）</div>
+      <div class="user"><span class="status-dot"></span>稼働シフト：日勤</div>
+      <div class="avatar">仮</div>
+      <div class="role">社長</div>
+    </div>
+  </header>
+  <main>
+<section class="section-wrap project-section" id="project-list">
+<div class="section-heading-row">
+<div>
+<div class="heading-line">
+<h2>案件一覧</h2>
+<span class="small-note">全512件中 <span id="visibleCount">8</span>件を表示（工程で絞り込み可能）</span>
+</div>
+<p class="operation-help">現在工程の「開始」を押すと時刻を自動記録します。作業後に同じボタンの「終了」を押すと終了時刻と所要時間を記録し、次工程へ送ります。不良・クレームは発生時にボタンから記録できます。</p>
+</div>
+<div class="search-box">
+<input aria-label="案件名・得意先で検索" id="projectSearch" placeholder="案件名・得意先で検索" type="search"/>
+<span>⌕</span>
+</div>
+</div>
+<div class="filter-row" id="filterRow">
+<button class="filter-btn active" data-filter="all">すべて</button>
+<button class="filter-btn" data-filter="見積">見積</button>
+<button class="filter-btn" data-filter="受注">受注</button>
+<button class="filter-btn" data-filter="設計">設計</button>
+<button class="filter-btn" data-filter="加工">加工</button>
+<button class="filter-btn" data-filter="最終検査">最終検査</button>
+<button class="filter-btn" data-filter="納品">納品</button>
+<button class="filter-btn danger-outline" data-filter="不良">不良発生中</button>
+<button class="filter-btn claim-outline" data-filter="クレーム">クレーム発生</button>
+<button class="filter-btn late-outline" data-filter="遅延">納期遅延</button>
+</div>
+<div class="project-list" id="projectList"></div>
+</section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+
+    const today = new Date('2026-09-25T10:00:00');
+
+    const monthlyOrders = [
+      ['10月', 278], ['11月', 314], ['12月', 266], ['1月', 382], ['2月', 341], ['3月', 305],
+      ['4月', 401], ['5月', 365], ['6月', 418], ['7月', 446], ['8月', 400], ['9月', 432]
+    ];
+    const yearlyOrders = [['2022年度', 2842], ['2023年度', 3361], ['2024年度', 3124], ['2025年度', 4208], ['2026年度', 3742]];
+    const qualityTrend = [
+      ['3月', 5, 1], ['4月', 4, 1], ['5月', 7, 3], ['6月', 5, 1], ['7月', 3, 1], ['8月', 6, 2], ['9月', 4, 2]
+    ];
+
+    const timeLogs = [
+      {projectId:1, process:'見積', worker:'仮', start:'2026-09-25T08:12:00', end:'2026-09-25T08:26:00'},
+      {projectId:1, process:'受注', worker:'仮', start:'2026-09-25T08:28:00', end:'2026-09-25T08:35:00'},
+      {projectId:1, process:'設計', worker:'山田', start:'2026-09-25T08:42:00', end:'2026-09-25T09:18:00'},
+      {projectId:1, process:'2Dレーザー加工', worker:'佐藤', start:'2026-09-25T09:22:00', end:'2026-09-25T09:51:00'},
+      {projectId:2, process:'見積', worker:'仮', start:'2026-09-25T08:05:00', end:'2026-09-25T08:17:00'},
+      {projectId:2, process:'受注', worker:'仮', start:'2026-09-25T08:20:00', end:'2026-09-25T08:31:00'},
+      {projectId:2, process:'設計', worker:'山田', start:'2026-09-25T08:40:00', end:'2026-09-25T09:25:00'},
+      {projectId:5, process:'溶接', worker:'鈴木', start:'2026-09-25T09:35:00', end:null}
+    ];
+
+    const projects = [
+      {
+        id: 1,
+        customer: 'ロビー工業',
+        name: '制御盤カバー',
+        qty: '20台',
+        due: '2026/09/20',
+        route: ['見積', '受注', '設計', '2Dレーザー加工', '曲げ', '溶接', '最終検査', '納品'],
+        completed: 4,
+        defect: false,
+        claim: false,
+        comments: [],
+        late: true
+      },
+      {
+        id: 2,
+        customer: '中京精機',
+        name: '治具ベースプレート',
+        qty: '4式',
+        due: '2026/09/25',
+        route: ['見積', '受注', '設計', '3Dレーザー加工', '最終検査', '納品'],
+        completed: 3,
+        defect: true,
+        claim: false,
+        comments: [
+          {type:'不良', time:'9/09 08:40', author:'佐藤（加工）', text:'穴位置ズレを確認。加工条件を確認中。'},
+          {type:'不良', time:'9/09 15:10', author:'佐藤（加工）', text:'治具の位置決めピン摩耗が原因と判明。ピン交換後に再加工予定。'}
+        ]
+      },
+      {
+        id: 3,
+        customer: '大和精工',
+        name: '精密ブラケット一式',
+        qty: '12式',
+        due: '2026/10/02',
+        route: ['見積', '受注', '設計', '2Dレーザー加工', '3Dレーザー加工', '溶接', '最終検査', '納品'],
+        completed: 8,
+        defect: false,
+        claim: true,
+        comments: [
+          {type:'クレーム', time:'9/09 10:05', author:'鈴木（品質保証）', text:'納品先より溶接ビード外観について指摘。現物確認のため訪問予定。'},
+          {type:'クレーム', time:'9/09 16:40', author:'鈴木（品質保証）', text:'先方立会いのもと現物確認を実施。再研磨仕上げで是正対応にて合意。'}
+        ]
+      },
+      {
+        id: 4,
+        customer: '富岳製作所',
+        name: '金型ベースプレート',
+        qty: '1式',
+        due: '2026/10/10',
+        route: ['見積', '受注', '設計', '金型製作', '最終検査', '納品'],
+        completed: 1,
+        defect: false,
+        claim: false,
+        comments: []
+      },
+      {
+        id: 5,
+        customer: '東海配電',
+        name: '配電BOX一式',
+        qty: '8台',
+        due: '2026/09/28',
+        route: ['見積', '受注', '設計', '2Dレーザー加工', '曲げ', '溶接', '最終検査', '納品'],
+        completed: 6,
+        defect: false,
+        claim: false,
+        comments: []
+      },
+      {
+        id: 6,
+        customer: '名南オートメーション',
+        name: 'ロボット架台カバー',
+        qty: '6台',
+        due: '2026/10/03',
+        route: ['見積', '受注', '設計', '2Dレーザー加工', '曲げ', '最終検査', '納品'],
+        completed: 3,
+        defect: true,
+        claim: false,
+        comments: [
+          {type:'不良', time:'9/24 14:18', author:'田中（曲げ）', text:'曲げ角度が図面公差外。材料ロットと加工条件を確認中。'}
+        ]
+      },
+      {
+        id: 7,
+        customer: '三河設備',
+        name: 'ステンレス配管支持金具',
+        qty: '30個',
+        due: '2026/10/06',
+        route: ['見積', '受注', '設計', '3Dレーザー加工', '溶接', '最終検査', '納品'],
+        completed: 2,
+        defect: false,
+        claim: false,
+        comments: []
+      },
+      {
+        id: 8,
+        customer: '尾張エンジニアリング',
+        name: '安全カバー試作品',
+        qty: '2台',
+        due: '2026/10/12',
+        route: ['見積', '受注', '設計', '2Dレーザー加工', '最終検査', '納品'],
+        completed: 0,
+        defect: false,
+        claim: false,
+        comments: []
+      }
+    ];
+
+    let currentFilter = 'all';
+    let searchText = '';
+
+    function formatDate(date){
+      return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${['日','月','火','水','木','金','土'][date.getDay()]}）`;
+    }
+
+    function dueState(project){
+      const due = new Date(project.due.replaceAll('/','-') + 'T23:59:59');
+      const diff = Math.ceil((due - today) / 86400000);
+      if (diff < 0 && project.completed < project.route.length) return {label:`${Math.abs(diff)}日超過`, cls:'overdue'};
+      if (diff <= 3 && project.completed < project.route.length) return {label:`残り${Math.max(diff,0)}日`, cls:'soon'};
+      return {label:'', cls:''};
+    }
+
+    function majorStage(step){
+      if (['見積','受注'].includes(step)) return '受注';
+      if (step === '設計') return '設計';
+      if (['2Dレーザー加工','3Dレーザー加工','金型製作','曲げ','溶接'].includes(step)) return '加工';
+      if (step === '最終検査') return '最終検査';
+      if (step === '納品') return '納品';
+      return step;
+    }
+
+    function currentStep(project){
+      if (project.completed >= project.route.length) return '納品';
+      return project.route[project.completed];
+    }
+
+    function renderSimpleBarChart(targetId, rows, {currentIndex = rows.length - 1, suffix = '', yearly = false} = {}){
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      const max = Math.max(...rows.map(r => r[1]));
+      target.innerHTML = rows.map((row, index) => {
+        const h = Math.max(12, Math.round(row[1] / max * 100));
+        return `<div class="bar-col ${yearly ? 'year-col' : ''}">
+          <span class="bar-value">${row[1].toLocaleString()}${suffix}</span>
+          <div class="bar ${index === currentIndex ? 'current' : ''}" style="height:${h}%"></div>
+          <span class="bar-label">${row[0]}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderQualityChart(){
+      const target = document.getElementById('qualityTrendChart');
+      if (!target) return;
+      const max = Math.max(...qualityTrend.flatMap(r => [r[1], r[2]]));
+      target.innerHTML = qualityTrend.map((row, index) => {
+        const defectH = Math.max(8, row[1] / max * 100);
+        const claimH = Math.max(8, row[2] / max * 100);
+        return `<div class="dual-col ${index === qualityTrend.length - 1 ? 'current' : ''}">
+          <div class="dual-bars">
+            <div class="quality-bar defect" style="height:${defectH}%" title="不良 ${row[1]}件"></div>
+            <div class="quality-bar claim" style="height:${claimH}%" title="クレーム ${row[2]}件"></div>
+          </div>
+          <span>${row[0]}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function incidentRows(){
+      const rows = [];
+      projects.forEach(p => {
+        if (p.defect){
+          const latest = [...p.comments].reverse().find(c => c.type === '不良');
+          rows.push({type:'不良', name:`${p.customer}　${p.name}`, date:latest?.time?.split(' ')[0] || '9/25', text: latest?.text || '不良内容を確認中', status:'是正対応中'});
+        }
+        if (p.claim){
+          const latest = [...p.comments].reverse().find(c => c.type === 'クレーム');
+          rows.push({type:'クレーム', name:`${p.customer}　${p.name}`, date:latest?.time?.split(' ')[0] || '9/25', text: latest?.text || '先方確認中', status:'先方確認中'});
+        }
+      });
+      return rows;
+    }
+
+    function renderIncidents(){
+      const rows = incidentRows();
+      const label = document.getElementById('incidentCountLabel');
+      const body = document.getElementById('incidentTableBody');
+      if (!label || !body) return;
+      label.textContent = `全${rows.length}件中 上位${Math.min(rows.length,3)}件を表示`;
+      body.innerHTML = rows.slice(0,3).map(r => `
+        <tr>
+          <td><span class="incident-pill ${r.type === 'クレーム' ? 'claim' : 'defect'}">${r.type}</span></td>
+          <td>${r.name}</td>
+          <td>${r.date}</td>
+          <td class="incident-text">${r.text}</td>
+          <td><span class="status-pill">${r.status}</span></td>
+        </tr>`).join('');
+    }
+
+    function timeText(iso){
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    function durationMinutes(log){
+      if (!log?.start || !log?.end) return null;
+      return Math.max(0, Math.round((new Date(log.end) - new Date(log.start)) / 60000));
+    }
+
+    function stageLog(projectId, step){
+      return [...timeLogs].reverse().find(log => log.projectId === projectId && log.process === step);
+    }
+
+    function activeStageLog(project){
+      const step = currentStep(project);
+      return [...timeLogs].reverse().find(log => log.projectId === project.id && log.process === step && !log.end);
+    }
+
+    function stageButton(project, step, idx){
+      const log = stageLog(project.id, step);
+      if (idx < project.completed){
+        const detail = log?.end ? `${timeText(log.start)}–${timeText(log.end)} / ${durationMinutes(log)}分` : '完了済み';
+        return `<button class="stage-btn completed" disabled><span>${step} ✓</span><small>${detail}</small></button>`;
+      }
+      if (idx === project.completed && project.completed < project.route.length){
+        const active = activeStageLog(project);
+        if (active){
+          return `<button class="stage-btn current running-stage" data-project="${project.id}" data-stage-index="${idx}" data-time-action="end" title="クリックで終了時刻を自動記録し、次工程へ送る"><span>${step}</span><small>■ 終了　開始 ${timeText(active.start)}</small></button>`;
+        }
+        return `<button class="stage-btn current start-stage" data-project="${project.id}" data-stage-index="${idx}" data-time-action="start" title="クリックで開始時刻を自動記録"><span>${step}</span><small>▶ 開始</small></button>`;
+      }
+      return `<button class="stage-btn waiting" disabled><span>${step}</span><small>未到達</small></button>`;
+    }
+
+    function stageGroups(project){
+      return project.route.map((step, idx) => {
+        return `<div class="stage-node">
+          <span class="stage-major">${majorStage(step)}</span>
+          ${stageButton(project, step, idx)}
+        </div>${idx < project.route.length - 1 ? '<span class="stage-arrow">›</span>' : ''}`;
+      }).join('');
+    }
+
+    function commentMarkup(project){
+      if (!project.comments.length) return `<div class="comment-empty">不良・クレームの登録はありません。</div>`;
+      return project.comments.map(c => `<div class="comment-row ${c.type === 'クレーム' ? 'claim' : 'defect'}">
+        <div class="comment-meta"><span>${c.time}</span><b>${c.author}</b><span class="comment-kind">${c.type}</span></div>
+        <div class="comment-text">${c.text}</div>
+      </div>`).join('');
+    }
+
+    function matchesFilter(project){
+      if (searchText){
+        const hay = `${project.customer} ${project.name} ${project.qty}`.toLowerCase();
+        if (!hay.includes(searchText.toLowerCase())) return false;
+      }
+      if (currentFilter === 'all') return true;
+      if (currentFilter === '不良') return project.defect;
+      if (currentFilter === 'クレーム') return project.claim;
+      if (currentFilter === '遅延') return dueState(project).cls === 'overdue';
+      return majorStage(currentStep(project)) === currentFilter || currentStep(project) === currentFilter;
+    }
+
+    function renderProjects(){
+      const target = document.getElementById('projectList');
+      if (!target) return;
+      const visible = projects.filter(matchesFilter);
+      const count = document.getElementById('visibleCount');
+      if (count) count.textContent = visible.length;
+      if (!visible.length){
+        target.innerHTML = `<div class="empty-state">条件に一致する案件がありません。</div>`;
+        return;
+      }
+      target.innerHTML = visible.map(p => {
+        const due = dueState(p);
+        const statusText = p.completed >= p.route.length ? '納品済み' : majorStage(currentStep(p));
+        return `<article class="project-card ${due.cls === 'overdue' ? 'late-project' : ''}" data-project-card="${p.id}">
+          <div class="project-top-row">
+            <div class="project-title-wrap">
+              <span class="project-status ${p.completed >= p.route.length ? 'done' : ''}">${statusText}</span>
+              <h3>${p.customer}</h3>
+              <strong>${p.name}</strong>
+              <span class="qty">${p.qty}</span>
+            </div>
+            <div class="due-wrap">
+              <span class="due-label">納期</span>
+              <strong class="${due.cls}">${p.due}</strong>
+              ${due.label ? `<span class="due-badge ${due.cls}">${due.label}</span>` : ''}
+            </div>
+            <div class="quality-controls">
+              <button class="quality-toggle defect ${p.defect ? 'on' : ''}" data-quality="defect" data-project="${p.id}">● 不良発生</button>
+              <button class="quality-toggle claim ${p.claim ? 'on' : ''}" data-quality="claim" data-project="${p.id}">● クレーム発生</button>
+            </div>
+          </div>
+
+          <div class="project-body-grid">
+            <div class="stage-area">
+              <div class="stage-flow">${stageGroups(p)}</div>
+              <div class="comment-log">${commentMarkup(p)}</div>
+            </div>
+            <div class="quality-entry">
+              <label for="comment-${p.id}">不良・クレーム内容</label>
+              <textarea id="comment-${p.id}" rows="3" placeholder="例：穴位置ズレ、溶接外観の指摘、是正内容など"></textarea>
+              <div class="entry-actions">
+                <select id="comment-type-${p.id}" aria-label="登録種別">
+                  <option value="不良" ${p.defect ? 'selected' : ''}>不良</option>
+                  <option value="クレーム" ${p.claim ? 'selected' : ''}>クレーム</option>
+                </select>
+                <button class="add-comment-btn" data-add-comment="${p.id}">登録</button>
+              </div>
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+      bindDynamicEvents();
+    }
+
+    function updateDashboardMetrics(){
+      const defectCount = projects.filter(p => p.defect).length;
+      const claimCount = projects.filter(p => p.claim).length;
+      const lateCount = projects.filter(p => dueState(p).cls === 'overdue').length;
+      const defectEl = document.getElementById('metricDefects');
+      const claimEl = document.getElementById('metricClaims');
+      const lateEl = document.getElementById('metricLate');
+      if (defectEl) defectEl.textContent = defectCount;
+      if (claimEl) claimEl.textContent = claimCount;
+      if (lateEl) lateEl.textContent = lateCount;
+    }
+
+    function showToast(message, type='normal'){
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast show ${type}`;
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.className = 'toast', 2800);
+    }
+
+    function recordStageStart(projectId, index){
+      const p = projects.find(x => x.id === projectId);
+      if (!p || index !== p.completed || p.completed >= p.route.length || activeStageLog(p)) return;
+      const step = p.route[index];
+      timeLogs.push({projectId:p.id, process:step, worker:'仮', start:new Date().toISOString(), end:null});
+      showToast(`${step}を開始しました。開始時刻を自動記録しました。`, 'success');
+      renderProjects();
+      renderTimeSummary();
+    }
+
+    function recordStageEnd(projectId, index){
+      const p = projects.find(x => x.id === projectId);
+      if (!p || index !== p.completed || p.completed >= p.route.length) return;
+      const step = p.route[index];
+      const log = activeStageLog(p);
+      if (!log) return;
+      log.end = new Date().toISOString();
+      p.completed += 1;
+      const mins = durationMinutes(log);
+      if (p.completed >= p.route.length){
+        showToast(`${step}を終了（${mins}分）。案件を納品完了にしました。`, 'success');
+      } else {
+        showToast(`${step}を終了（${mins}分）。次工程「${p.route[p.completed]}」へ送りました。`, 'success');
+      }
+      renderProjects();
+      renderIncidents();
+      renderTimeSummary();
+      updateDashboardMetrics();
+    }
+
+    function renderTimeSummary(){
+      const filter = document.getElementById('timeProcessFilter')?.value || 'all';
+      const rows = timeLogs.filter(log => filter === 'all' || log.process === filter);
+      const done = rows.filter(log => log.end);
+      const running = rows.filter(log => !log.end);
+      const durations = done.map(durationMinutes).filter(v => v !== null);
+      const avg = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0) / durations.length) : 0;
+      const longest = durations.length ? Math.max(...durations) : 0;
+      const doneEl = document.getElementById('timeDoneCount');
+      const runningEl = document.getElementById('timeRunningCount');
+      const avgEl = document.getElementById('timeAverage');
+      const longestEl = document.getElementById('timeLongest');
+      const body = document.getElementById('timeLogBody');
+      if (!body) return;
+      if (doneEl) doneEl.innerHTML = `${done.length}<small>件</small>`;
+      if (runningEl) runningEl.innerHTML = `${running.length}<small>件</small>`;
+      if (avgEl) avgEl.innerHTML = `${avg}<small>分</small>`;
+      if (longestEl) longestEl.innerHTML = `${longest}<small>分</small>`;
+      body.innerHTML = [...rows].reverse().slice(0,10).map(log => {
+        const p = projects.find(x => x.id === log.projectId);
+        const mins = durationMinutes(log);
+        return `<tr class="${log.end ? '' : 'running-row'}">
+          <td><strong>${p ? p.customer : '—'}</strong><span>${p ? p.name : '—'}</span></td>
+          <td>${log.process}</td>
+          <td>${log.worker}</td>
+          <td>${timeText(log.start)}</td>
+          <td>${log.end ? timeText(log.end) : '<span class="running-pill">作業中</span>'}</td>
+          <td>${mins === null ? '—' : `<strong>${mins}分</strong>`}</td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="6" class="time-empty">該当する作業記録はありません。</td></tr>';
+    }
+
+    function handleQualityToggle(projectId, type){
+      const p = projects.find(x => x.id === projectId);
+      if (!p) return;
+      if (type === 'claim' && p.completed < p.route.length){
+        showToast('クレームは納品完了後の案件で登録してください。', 'warning');
+        return;
+      }
+      p[type] = !p[type];
+      showToast(`${type === 'claim' ? 'クレーム' : '不良'}発生を${p[type] ? 'ON' : '解除'}にしました。`, p[type] ? 'warning' : 'normal');
+      renderProjects();
+      renderIncidents();
+      updateDashboardMetrics();
+    }
+
+    function addComment(projectId){
+      const p = projects.find(x => x.id === projectId);
+      const textArea = document.getElementById(`comment-${projectId}`);
+      const typeSelect = document.getElementById(`comment-type-${projectId}`);
+      const text = textArea.value.trim();
+      const type = typeSelect.value;
+      if (!text){ showToast('登録する内容を入力してください。', 'warning'); return; }
+      if (type === 'クレーム' && p.completed < p.route.length){
+        showToast('クレームは納品完了後の案件で登録してください。', 'warning');
+        return;
+      }
+      if (type === '不良') p.defect = true;
+      if (type === 'クレーム') p.claim = true;
+      p.comments.push({type, time:'9/25 10:30', author:'仮（社長）', text});
+      showToast(`${type}内容を登録しました。`, 'success');
+      renderProjects();
+      renderIncidents();
+      updateDashboardMetrics();
+    }
+
+    function bindDynamicEvents(){
+      document.querySelectorAll('.stage-btn.current[data-time-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const projectId = Number(btn.dataset.project);
+          const stageIndex = Number(btn.dataset.stageIndex);
+          if (btn.dataset.timeAction === 'start') recordStageStart(projectId, stageIndex);
+          else recordStageEnd(projectId, stageIndex);
+        });
+      });
+      document.querySelectorAll('.quality-toggle').forEach(btn => {
+        btn.addEventListener('click', () => handleQualityToggle(Number(btn.dataset.project), btn.dataset.quality));
+      });
+      document.querySelectorAll('[data-add-comment]').forEach(btn => {
+        btn.addEventListener('click', () => addComment(Number(btn.dataset.addComment)));
+      });
+    }
+
+    document.getElementById('filterRow')?.addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderProjects();
+    });
+
+    document.getElementById('timeProcessFilter')?.addEventListener('change', renderTimeSummary);
+
+    document.getElementById('projectSearch')?.addEventListener('input', e => {
+      searchText = e.target.value.trim();
+      renderProjects();
+    });
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.href) {
+          window.location.href = btn.dataset.href;
+          return;
+        }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.scroll);
+        if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    const todayLabel = document.getElementById('todayLabel');
+    if (todayLabel) todayLabel.textContent = formatDate(today);
+    renderSimpleBarChart('monthlyOrdersChart', monthlyOrders);
+    renderSimpleBarChart('yearlyOrdersChart', yearlyOrders, {yearly:true});
+    renderQualityChart();
+    renderIncidents();
+    renderProjects();
+    renderTimeSummary();
+    updateDashboardMetrics();
+  
+  </script>
+</body>
+</html>
